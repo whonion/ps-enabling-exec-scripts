@@ -16,11 +16,50 @@ On computers other than Windows, the default - and Unrestricted - execution poli
 
 You may encounter security policy restrictions in Windows, for example when trying to activate the Python Virtual Environment.
 
-```ps
-# Run as administrator Power Shell Terminal
-# Execute script `AllowExecuteScripts.ps1`
+To allow PowerShell scripts to run on Windows 10/11
+## Method I (using PowerShell)
 
-AllowExecuteScripts.ps1
+ - Run PowerShell as Administrator;
+ - Set the scripts execution policy to one of the following states:
+
+```powershell
+Set-ExecutionPolicy remotesigned
+```
+or:
+```
+Set-ExecutionPolicy Bypass
+```
+You can also check the status of the current policies with the command:
+```powershell
+Get-ExecutionPolicy -List
 ```
 
-You can read more here: <https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_execution_policies?view=powershell-7.3>
+## Method II (using Registry Editor)
+
+```regfile
+Windows Registry Editor Version 5.00
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\PowerShell]
+"EnableScripts"=dword:00000001 "ExecutionPolicy"="Bypass"
+```
+
+```regfile
+Windows Registry Editor Version 5.00
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\PowerShell]
+"EnableScripts"=dword:00000001 "ExecutionPolicy"="Unrestricted"
+```
+
+### Execution Script without changes policy
+
+You also execution your script on Local machine end-user apply next method:
+
+```powershell
+powershell.exe -noprofile -executionpolicy bypass -file .\Your_Script.ps1
+```
+
+
+
+You can read more  [here][MSDN-Ref]
+
+[MSDN-Ref]: https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_execution_policies?view=powershell-7.3
